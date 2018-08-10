@@ -51,6 +51,7 @@
     <Compile Include="Budget.cs" />
     <Compile Include="BudgetCalculator.cs" />
     <Compile Include="BudgetTests.cs" />
+    <Compile Include="Period.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
