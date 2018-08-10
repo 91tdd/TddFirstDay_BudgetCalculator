@@ -45,15 +45,15 @@ namespace BudgetCalculator
 
             if (period.IsQuerySingleMonth())
             {
-                return GetStartMonthAndEndMonthBudgetAmount(budgetList, period.Start, period.End);
+                return EffectiveAmount(budgetList, period.Start, period.End);
             }
             else
             {
                 var firstMonthEndDay = new DateTime(period.Start.Year, period.Start.Month, DateTime.DaysInMonth(period.Start.Year, period.Start.Month));
-                var startAmount = GetStartMonthAndEndMonthBudgetAmount(budgetList, period.Start, firstMonthEndDay);
+                var startAmount = EffectiveAmount(budgetList, period.Start, firstMonthEndDay);
 
                 var lastMonthStartDay = new DateTime(period.End.Year, period.End.Month, 1);
-                var lastAmount = GetStartMonthAndEndMonthBudgetAmount(budgetList, lastMonthStartDay, period.End);
+                var lastAmount = EffectiveAmount(budgetList, lastMonthStartDay, period.End);
 
                 var middleAmount = 0;
                 var middleStart = new DateTime(period.Start.Year, period.Start.Month, 1).AddMonths(1);
@@ -70,7 +70,7 @@ namespace BudgetCalculator
             }
         }
 
-        private decimal GetStartMonthAndEndMonthBudgetAmount(IList<Budget> budgetList, DateTime start, DateTime end)
+        private decimal EffectiveAmount(IList<Budget> budgetList, DateTime start, DateTime end)
         {
             var budget = budgetList.FirstOrDefault(a => a.YearMonth == start.ToString("yyyyMM"));
             if (budget != null)
