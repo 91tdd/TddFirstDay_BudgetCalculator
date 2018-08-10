@@ -44,14 +44,16 @@ namespace BudgetCalculator
 
             if (period.IsQuerySingleMonth())
             {
-                return EffectiveAmount(period.Start, period.End, budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM")));
+                var effectiveStart = period.Start;
+                var effectiveEnd = period.End;
+                var budget = budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM"));
+                return EffectiveAmount(effectiveStart, effectiveEnd, budget);
             }
             else
             {
                 var totalAmount = 0m;
 
-                var firstMonthEndDay = new DateTime(period.Start.Year, period.Start.Month, DateTime.DaysInMonth(period.Start.Year, period.Start.Month));
-                var startAmount = EffectiveAmount(period.Start, firstMonthEndDay, budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM")));
+                var startAmount = StartAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM")));
                 totalAmount += startAmount;
 
                 var lastMonthStartDay = new DateTime(period.End.Year, period.End.Month, 1);
@@ -70,6 +72,14 @@ namespace BudgetCalculator
 
                 return totalAmount;
             }
+        }
+
+        private decimal StartAmount(Period period, Budget budget)
+        {
+            var firstMonthEndDay = new DateTime(period.Start.Year, period.Start.Month,
+                DateTime.DaysInMonth(period.Start.Year, period.Start.Month));
+
+            return EffectiveAmount(period.Start, firstMonthEndDay, budget);
         }
 
         private decimal EffectiveAmount(DateTime start, DateTime end, Budget budget)
