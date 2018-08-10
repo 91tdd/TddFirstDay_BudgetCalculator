@@ -73,12 +73,16 @@ namespace BudgetCalculator
                     {
                         if (budget.YearMonth == period.Start.ToString("yyyyMM"))
                         {
-                            var startAmount = StartAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM")));
+                            //Budget budget = budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM"));
+                            var firstMonthEndDay = new DateTime(budget.Year, budget.Month, DateTime.DaysInMonth(period.Start.Year, period.Start.Month));
+                            var startAmount = EffectiveAmount(period.Start, firstMonthEndDay, budget);
                             totalAmount += startAmount;
                         }
                         else if (budget.YearMonth == period.End.ToString("yyyyMM"))
                         {
-                            var lastAmount = LastAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM")));
+                            //Budget budget = budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM"));
+                            var lastMonthStartDay = new DateTime(budget.Year, budget.Month, 1);
+                            var lastAmount = EffectiveAmount(lastMonthStartDay, period.End, budget);
                             totalAmount += lastAmount;
                         }
                         else
@@ -91,19 +95,6 @@ namespace BudgetCalculator
 
                 return totalAmount;
             }
-        }
-
-        private decimal LastAmount(Period period, Budget budget)
-        {
-            var lastMonthStartDay = new DateTime(budget.Year, budget.Month, 1);
-            return EffectiveAmount(lastMonthStartDay, period.End, budget);
-        }
-
-        private decimal StartAmount(Period period, Budget budget)
-        {
-            var firstMonthEndDay = new DateTime(budget.Year, budget.Month, DateTime.DaysInMonth(period.Start.Year, period.Start.Month));
-
-            return EffectiveAmount(period.Start, firstMonthEndDay, budget);
         }
 
         private decimal EffectiveAmount(DateTime start, DateTime end, Budget budget)
