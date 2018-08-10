@@ -8,6 +8,9 @@ namespace BudgetCalculator
     {
         public Period(DateTime start, DateTime end)
         {
+            if (start > end)
+                throw new ArgumentException();
+
             Start = start;
             End = end;
         }
@@ -33,8 +36,6 @@ namespace BudgetCalculator
         public decimal TotalAmount(DateTime start, DateTime end)
         {
             var period = new Period(start, end);
-            if (start > end)
-                throw new ArgumentException();
 
             var budgetList = _repo.GetAll();
             if (budgetList.Count == 0)
