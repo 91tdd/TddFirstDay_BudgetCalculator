@@ -53,19 +53,39 @@ namespace BudgetCalculator
             {
                 var totalAmount = 0m;
 
-                var startAmount = StartAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM")));
-                totalAmount += startAmount;
+                //var startAmount = StartAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM")));
+                //totalAmount += startAmount;
 
-                var lastAmount = LastAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == period.End.ToString("yyyyMM")));
-                totalAmount += lastAmount;
+                //var lastAmount = LastAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == period.End.ToString("yyyyMM")));
+                //totalAmount += lastAmount;
 
-                var middleStart = new DateTime(period.Start.Year, period.Start.Month, 1).AddMonths(1);
-                var middleEnd = new DateTime(period.End.Year, period.End.Month, DateTime.DaysInMonth(period.End.Year, period.End.Month)).AddMonths(-1);
+                //var middleStart = new DateTime(period.Start.Year, period.Start.Month, 1).AddMonths(1);
+                //var middleEnd = new DateTime(period.End.Year, period.End.Month, DateTime.DaysInMonth(period.End.Year, period.End.Month)).AddMonths(-1);
+
+                var middleStart = new DateTime(period.Start.Year, period.Start.Month, 1);
+                var middleEnd = new DateTime(period.End.Year, period.End.Month,
+                    DateTime.DaysInMonth(period.End.Year, period.End.Month));
+
                 while (middleStart < middleEnd)
                 {
                     var budget = budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM"));
-                    totalAmount += budget?.Amount ?? 0;
-
+                    if (budget != null)
+                    {
+                        if (budget.YearMonth == period.Start.ToString("yyyyMM"))
+                        {
+                            var startAmount = StartAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM")));
+                            totalAmount += startAmount;
+                        }
+                        else if (budget.YearMonth == period.End.ToString("yyyyMM"))
+                        {
+                            var lastAmount = LastAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM")));
+                            totalAmount += lastAmount;
+                        }
+                        else
+                        {
+                            totalAmount += budget?.Amount ?? 0;
+                        }
+                    }
                     middleStart = middleStart.AddMonths(1);
                 }
 
@@ -75,14 +95,13 @@ namespace BudgetCalculator
 
         private decimal LastAmount(Period period, Budget budget)
         {
-            var lastMonthStartDay = new DateTime(period.End.Year, period.End.Month, 1);
+            var lastMonthStartDay = new DateTime(budget.Year, budget.Month, 1);
             return EffectiveAmount(lastMonthStartDay, period.End, budget);
         }
 
         private decimal StartAmount(Period period, Budget budget)
         {
-            var firstMonthEndDay = new DateTime(period.Start.Year, period.Start.Month,
-                DateTime.DaysInMonth(period.Start.Year, period.Start.Month));
+            var firstMonthEndDay = new DateTime(budget.Year, budget.Month, DateTime.DaysInMonth(period.Start.Year, period.Start.Month));
 
             return EffectiveAmount(period.Start, firstMonthEndDay, budget);
         }
