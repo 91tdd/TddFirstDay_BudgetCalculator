@@ -77,8 +77,7 @@ namespace BudgetCalculator
             {
                 int dayDiffs = (end - start).Days + 1;
 
-                var daysOfMonth = DateTime.DaysInMonth(budget.Year, budget.Month);
-                return (budget.Amount / (decimal)daysOfMonth) * (dayDiffs);
+                return (budget.Amount / (decimal)budget.DaysOfMonth()) * (dayDiffs);
             }
             else
                 return 0;
