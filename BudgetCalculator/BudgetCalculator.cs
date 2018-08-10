@@ -77,7 +77,7 @@ namespace BudgetCalculator
             {
                 int dayDiffs = (end - start).Days + 1;
 
-                return (budget.Amount / (decimal)budget.DaysOfMonth()) * (dayDiffs);
+                return budget.DailyAmount() * (dayDiffs);
             }
             else
                 return 0;

@@ -14,5 +14,10 @@ namespace BudgetCalculator
         {
             return DateTime.DaysInMonth(Year, Month);
         }
+
+        public decimal DailyAmount()
+        {
+            return Amount / (decimal)DaysOfMonth();
+        }
     }
 }
