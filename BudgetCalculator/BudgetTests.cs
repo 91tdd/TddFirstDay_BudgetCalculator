@@ -24,7 +24,6 @@ namespace BudgetCalculator
             var budget = emptyBudgetCalculator.TotalAmount(DateTime.MinValue, DateTime.MinValue);
             Assert.AreEqual(0, budget);
         }
-        
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -41,7 +40,6 @@ namespace BudgetCalculator
 
             var budget = budgetCalculator.TotalAmount(new DateTime(2018, 12, 31), new DateTime(2017, 12, 31));
         }
-
 
         private void AmountShouldBe(int expected, DateTime start, DateTime end)
         {
@@ -100,7 +98,6 @@ namespace BudgetCalculator
             AmountShouldBe(20, new DateTime(2018, 01, 01), new DateTime(2018, 01, 02));
         }
 
-
         [TestMethod]
         public void CrossMonthHaveBudget()
         {
@@ -143,6 +140,7 @@ namespace BudgetCalculator
             var budget = budgetCalculator.TotalAmount(new DateTime(2017, 08, 31), new DateTime(2018, 06, 01));
             Assert.AreEqual(1830, budget);
         }
+
         [TestMethod]
         public void CrossMonthSomeHaveBudgetSomeNoBudget()
         {
@@ -157,6 +155,7 @@ namespace BudgetCalculator
             var budget = budgetCalculator.TotalAmount(new DateTime(2018, 2, 15), new DateTime(2018, 03, 15));
             Assert.AreEqual(300, budget);
         }
+
         [TestMethod]
         public void OutOfRangBudget()
         {
@@ -171,8 +170,6 @@ namespace BudgetCalculator
             var budget = budgetCalculator.TotalAmount(new DateTime(2019, 1, 1), new DateTime(2019, 12, 31));
             Assert.AreEqual(0, budget);
         }
-
-
     }
 
     public interface IBudgetRepo
@@ -183,7 +180,7 @@ namespace BudgetCalculator
     public class Budget
     {
         public string YearMonth { get; set; }
-        public int Amount{get;set;}
+        public int Amount { get; set; }
     }
 
     public class TestDataBudgetRepository : IBudgetRepo
