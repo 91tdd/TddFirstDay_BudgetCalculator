@@ -42,8 +42,7 @@ namespace BudgetCalculator
                     var budget = budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM"));
                     if (budget != null)
                     {
-                        var otherPeriod = OtherPeriodFromBudget(budget);
-                        var effectiveDays = period.EffectiveDays(otherPeriod);
+                        var effectiveDays = period.EffectiveDays(budget.CreatePeriod());
                         totalAmount += EffectiveAmount(budget, effectiveDays);
                     }
 
@@ -52,12 +51,6 @@ namespace BudgetCalculator
 
                 return totalAmount;
             }
-        }
-
-        private static Period OtherPeriodFromBudget(Budget budget)
-        {
-            var otherPeriod = new Period(budget.FirstDay(), budget.LastDay());
-            return otherPeriod;
         }
 
         private decimal EffectiveAmount(Budget budget, int effectiveDays)
