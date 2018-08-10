@@ -56,8 +56,7 @@ namespace BudgetCalculator
                 var startAmount = StartAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM")));
                 totalAmount += startAmount;
 
-                var lastMonthStartDay = new DateTime(period.End.Year, period.End.Month, 1);
-                var lastAmount = EffectiveAmount(lastMonthStartDay, period.End, budgetList.FirstOrDefault(a => a.YearMonth == lastMonthStartDay.ToString("yyyyMM")));
+                var lastAmount = LastAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == period.End.ToString("yyyyMM")));
                 totalAmount += lastAmount;
 
                 var middleStart = new DateTime(period.Start.Year, period.Start.Month, 1).AddMonths(1);
@@ -72,6 +71,12 @@ namespace BudgetCalculator
 
                 return totalAmount;
             }
+        }
+
+        private decimal LastAmount(Period period, Budget budget)
+        {
+            var lastMonthStartDay = new DateTime(period.End.Year, period.End.Month, 1);
+            return EffectiveAmount(lastMonthStartDay, period.End, budget);
         }
 
         private decimal StartAmount(Period period, Budget budget)
