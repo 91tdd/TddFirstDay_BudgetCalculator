@@ -72,10 +72,11 @@ namespace BudgetCalculator
 
         private decimal GetStartMonthAndEndMonthBudgetAmount(IList<Budget> budgetList, DateTime start, DateTime end)
         {
-            if (budgetList.Count(a => a.YearMonth == start.ToString("yyyyMM")) > 0)
+            var budget = budgetList.FirstOrDefault(a => a.YearMonth == start.ToString("yyyyMM"));
+            if (budget != null)
             {
                 int dayDiffs = (end - start).Days + 1;
-                var amount = budgetList.Single(a => a.YearMonth == start.ToString("yyyyMM")).Amount;
+                var amount = budget.Amount;
 
                 var daysOfMonth = DateTime.DaysInMonth(start.Year, start.Month);
                 return (amount / (decimal)daysOfMonth) * (dayDiffs);
