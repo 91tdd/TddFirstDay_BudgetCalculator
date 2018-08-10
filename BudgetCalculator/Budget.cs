@@ -19,5 +19,16 @@ namespace BudgetCalculator
         {
             return Amount / (decimal)DaysOfMonth();
         }
+
+        public DateTime LastDay()
+        {
+            return new DateTime(Year, Month, DateTime.DaysInMonth(Year, Month));
+        }
+
+        public DateTime FirstDay()
+        {
+            var effectiveStart = new DateTime(Year, Month, 1);
+            return effectiveStart;
+        }
     }
 }

@@ -73,20 +73,23 @@ namespace BudgetCalculator
                     {
                         if (budget.YearMonth == period.Start.ToString("yyyyMM"))
                         {
-                            var effectiveEnd = new DateTime(budget.Year, budget.Month, DateTime.DaysInMonth(period.Start.Year, period.Start.Month));
+                            var effectiveEnd = budget.LastDay();
                             var effectiveStart = period.Start;
 
                             totalAmount += EffectiveAmount(effectiveStart, effectiveEnd, budget);
                         }
                         else if (budget.YearMonth == period.End.ToString("yyyyMM"))
                         {
-                            var effectiveStart = new DateTime(budget.Year, budget.Month, 1);
+                            var effectiveStart = budget.FirstDay();
                             var effectiveEnd = period.End;
                             totalAmount += EffectiveAmount(effectiveStart, effectiveEnd, budget);
                         }
                         else
                         {
-                            totalAmount += budget?.Amount ?? 0;
+                            var effectiveStart = budget.FirstDay();
+                            var effectiveEnd = budget.LastDay();
+                            totalAmount += EffectiveAmount(effectiveStart, effectiveEnd, budget);
+                            //totalAmount += budget?.Amount ?? 0;
                         }
                     }
                     middleStart = middleStart.AddMonths(1);
