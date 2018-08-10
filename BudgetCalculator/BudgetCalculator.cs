@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace BudgetCalculator
@@ -45,34 +44,36 @@ namespace BudgetCalculator
 
             if (period.IsQuerySingleMonth())
             {
-                return EffectiveAmount(budgetList, period.Start, period.End);
+                return EffectiveAmount(period.Start, period.End, budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM")));
             }
             else
             {
+                var totalAmount = 0m;
+
                 var firstMonthEndDay = new DateTime(period.Start.Year, period.Start.Month, DateTime.DaysInMonth(period.Start.Year, period.Start.Month));
-                var startAmount = EffectiveAmount(budgetList, period.Start, firstMonthEndDay);
+                var startAmount = EffectiveAmount(period.Start, firstMonthEndDay, budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM")));
+                totalAmount += startAmount;
 
                 var lastMonthStartDay = new DateTime(period.End.Year, period.End.Month, 1);
-                var lastAmount = EffectiveAmount(budgetList, lastMonthStartDay, period.End);
+                var lastAmount = EffectiveAmount(lastMonthStartDay, period.End, budgetList.FirstOrDefault(a => a.YearMonth == lastMonthStartDay.ToString("yyyyMM")));
+                totalAmount += lastAmount;
 
-                var middleAmount = 0;
                 var middleStart = new DateTime(period.Start.Year, period.Start.Month, 1).AddMonths(1);
                 var middleEnd = new DateTime(period.End.Year, period.End.Month, DateTime.DaysInMonth(period.End.Year, period.End.Month)).AddMonths(-1);
                 while (middleStart < middleEnd)
                 {
                     var budget = budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM"));
-                    middleAmount += budget?.Amount ?? 0;
+                    totalAmount += budget?.Amount ?? 0;
 
                     middleStart = middleStart.AddMonths(1);
                 }
 
-                return startAmount + middleAmount + lastAmount;
+                return totalAmount;
             }
         }
 
-        private decimal EffectiveAmount(IList<Budget> budgetList, DateTime start, DateTime end)
+        private decimal EffectiveAmount(DateTime start, DateTime end, Budget budget)
         {
-            var budget = budgetList.FirstOrDefault(a => a.YearMonth == start.ToString("yyyyMM"));
             if (budget != null)
             {
                 int dayDiffs = (end - start).Days + 1;
