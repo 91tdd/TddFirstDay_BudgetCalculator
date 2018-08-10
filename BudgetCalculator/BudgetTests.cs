@@ -177,12 +177,6 @@ namespace BudgetCalculator
         IList<Budget> GetAll();
     }
 
-    public class Budget
-    {
-        public string YearMonth { get; set; }
-        public int Amount { get; set; }
-    }
-
     public class TestDataBudgetRepository : IBudgetRepo
     {
         private IList<Budget> _data;
