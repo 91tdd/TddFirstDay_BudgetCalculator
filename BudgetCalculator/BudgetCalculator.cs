@@ -14,6 +14,11 @@ namespace BudgetCalculator
 
         public DateTime Start { get; private set; }
         public DateTime End { get; private set; }
+
+        public bool IsQuerySingleMonth()
+        {
+            return Start.ToString("yyyyMM") == End.ToString("yyyyMM");
+        }
     }
 
     public class BudgetCalculator
@@ -27,6 +32,7 @@ namespace BudgetCalculator
 
         public decimal TotalAmount(DateTime start, DateTime end)
         {
+            var period = new Period(start, end);
             if (start > end)
                 throw new ArgumentException();
 
@@ -36,7 +42,7 @@ namespace BudgetCalculator
                 return 0;
             }
 
-            if (IsQuerySingleMonth(new Period(start, end)))
+            if (period.IsQuerySingleMonth())
             {
                 return GetStartMonthAndEndMonthBudgetAmount(budgetList, start, end);
             }
@@ -59,11 +65,6 @@ namespace BudgetCalculator
 
                 return startAmount + middleAmount + lastAmount;
             }
-        }
-
-        private static bool IsQuerySingleMonth(Period period)
-        {
-            return period.Start.ToString("yyyyMM") == period.End.ToString("yyyyMM");
         }
 
         private decimal GetStartMonthAndEndMonthBudgetAmount(IList<Budget> budgetList, DateTime start, DateTime end)
