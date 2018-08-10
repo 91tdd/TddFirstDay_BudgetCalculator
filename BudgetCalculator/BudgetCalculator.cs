@@ -47,20 +47,11 @@ namespace BudgetCalculator
                 var effectiveStart = period.Start;
                 var effectiveEnd = period.End;
                 var budget = budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM"));
-                return EffectiveAmount(effectiveStart, effectiveEnd, budget);
+                return EffectiveAmount(budget, EffectiveDays(effectiveStart, effectiveEnd));
             }
             else
             {
                 var totalAmount = 0m;
-
-                //var startAmount = StartAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM")));
-                //totalAmount += startAmount;
-
-                //var lastAmount = LastAmount(period, budgetList.FirstOrDefault(a => a.YearMonth == period.End.ToString("yyyyMM")));
-                //totalAmount += lastAmount;
-
-                //var middleStart = new DateTime(period.Start.Year, period.Start.Month, 1).AddMonths(1);
-                //var middleEnd = new DateTime(period.End.Year, period.End.Month, DateTime.DaysInMonth(period.End.Year, period.End.Month)).AddMonths(-1);
 
                 var middleStart = new DateTime(period.Start.Year, period.Start.Month, 1);
                 var middleEnd = new DateTime(period.End.Year, period.End.Month,
@@ -87,7 +78,8 @@ namespace BudgetCalculator
                             effectiveEnd = budget.LastDay();
                         }
 
-                        totalAmount += EffectiveAmount(effectiveStart, effectiveEnd, budget);
+                        var effectiveDays = EffectiveDays(effectiveStart, effectiveEnd);
+                        totalAmount += EffectiveAmount(budget, effectiveDays);
                     }
 
                     middleStart = middleStart.AddMonths(1);
@@ -97,13 +89,11 @@ namespace BudgetCalculator
             }
         }
 
-        private decimal EffectiveAmount(DateTime start, DateTime end, Budget budget)
+        private decimal EffectiveAmount(Budget budget, int effectiveDays)
         {
             if (budget != null)
             {
-                var dayDiffs = EffectiveDays(start, end);
-
-                return budget.DailyAmount() * (dayDiffs);
+                return budget.DailyAmount() * (effectiveDays);
             }
             else
                 return 0;
