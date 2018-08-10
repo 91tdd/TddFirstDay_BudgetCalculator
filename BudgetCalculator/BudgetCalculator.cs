@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace BudgetCalculator
 {
@@ -16,29 +15,12 @@ namespace BudgetCalculator
         {
             var period = new Period(start, end);
 
-            var budgetList = _repo.GetAll();
-            if (budgetList.Count == 0)
-            {
-                return 0;
-            }
-
             var totalAmount = 0m;
 
-            var middleStart = new DateTime(period.Start.Year, period.Start.Month, 1);
-            var middleEnd = new DateTime(period.End.Year, period.End.Month,
-                DateTime.DaysInMonth(period.End.Year, period.End.Month));
-
-            while (middleStart < middleEnd)
+            foreach (var budget in _repo.GetAll())
             {
-                var budget = budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM"));
-                if (budget != null)
-                {
-                    totalAmount += budget.EffectiveAmount(period);
-                }
-
-                middleStart = middleStart.AddMonths(1);
+                totalAmount += budget.EffectiveAmount(period);
             }
-
             return totalAmount;
         }
     }
