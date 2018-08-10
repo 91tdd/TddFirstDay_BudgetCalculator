@@ -36,5 +36,10 @@ namespace BudgetCalculator
             var otherPeriod = new Period(FirstDay(), LastDay());
             return otherPeriod;
         }
+
+        public decimal EffectiveAmount(Period period)
+        {
+            return this.DailyAmount() * period.EffectiveDays(this.CreatePeriod());
+        }
     }
 }
