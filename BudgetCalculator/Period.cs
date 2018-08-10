@@ -13,19 +13,8 @@ namespace BudgetCalculator
             End = end;
         }
 
-        public DateTime Start { get; private set; }
         public DateTime End { get; private set; }
-
-        public bool IsQuerySingleMonth()
-        {
-            return Start.ToString("yyyyMM") == End.ToString("yyyyMM");
-        }
-
-        public static int Days(DateTime start, DateTime end)
-        {
-            int dayDiffs = (end - start).Days + 1;
-            return dayDiffs;
-        }
+        public DateTime Start { get; private set; }
 
         public int EffectiveDays(Period otherPeriod)
         {
@@ -46,7 +35,7 @@ namespace BudgetCalculator
                 effectiveStart = otherPeriod.Start;
             }
 
-            return Period.Days(effectiveStart, effectiveEnd);
+            return (effectiveEnd - effectiveStart).Days + 1;
         }
 
         private bool HasNoOverlap(Period otherPeriod)
