@@ -47,7 +47,7 @@ namespace BudgetCalculator
                 var effectiveStart = period.Start;
                 var effectiveEnd = period.End;
                 var budget = budgetList.FirstOrDefault(a => a.YearMonth == period.Start.ToString("yyyyMM"));
-                return EffectiveAmount(budget, EffectiveDays(effectiveStart, effectiveEnd));
+                return EffectiveAmount(budget, Days(effectiveStart, effectiveEnd));
             }
             else
             {
@@ -62,23 +62,7 @@ namespace BudgetCalculator
                     var budget = budgetList.FirstOrDefault(a => a.YearMonth == middleStart.ToString("yyyyMM"));
                     if (budget != null)
                     {
-                        var effectiveStart = period.Start;
-                        var effectiveEnd = period.End;
-                        if (budget.YearMonth == period.Start.ToString("yyyyMM"))
-                        {
-                            effectiveEnd = budget.LastDay();
-                        }
-                        else if (budget.YearMonth == period.End.ToString("yyyyMM"))
-                        {
-                            effectiveStart = budget.FirstDay();
-                        }
-                        else
-                        {
-                            effectiveStart = budget.FirstDay();
-                            effectiveEnd = budget.LastDay();
-                        }
-
-                        var effectiveDays = EffectiveDays(effectiveStart, effectiveEnd);
+                        var effectiveDays = EffectiveDays(period, budget);
                         totalAmount += EffectiveAmount(budget, effectiveDays);
                     }
 
@@ -87,6 +71,28 @@ namespace BudgetCalculator
 
                 return totalAmount;
             }
+        }
+
+        private static int EffectiveDays(Period period, Budget budget)
+        {
+            var effectiveStart = period.Start;
+            var effectiveEnd = period.End;
+            if (budget.YearMonth == period.Start.ToString("yyyyMM"))
+            {
+                effectiveEnd = budget.LastDay();
+            }
+            else if (budget.YearMonth == period.End.ToString("yyyyMM"))
+            {
+                effectiveStart = budget.FirstDay();
+            }
+            else
+            {
+                effectiveStart = budget.FirstDay();
+                effectiveEnd = budget.LastDay();
+            }
+
+            var effectiveDays = Days(effectiveStart, effectiveEnd);
+            return effectiveDays;
         }
 
         private decimal EffectiveAmount(Budget budget, int effectiveDays)
@@ -99,7 +105,7 @@ namespace BudgetCalculator
                 return 0;
         }
 
-        private static int EffectiveDays(DateTime start, DateTime end)
+        private static int Days(DateTime start, DateTime end)
         {
             int dayDiffs = (end - start).Days + 1;
             return dayDiffs;
