@@ -45,19 +45,19 @@ namespace BudgetCalculator
 
             if (period.IsQuerySingleMonth())
             {
-                return GetStartMonthAndEndMonthBudgetAmount(budgetList, start, end);
+                return GetStartMonthAndEndMonthBudgetAmount(budgetList, period.Start, period.End);
             }
             else
             {
-                var firstMonthEndDay = new DateTime(start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month));
-                var lastMonthStartDay = new DateTime(end.Year, end.Month, 1);
+                var firstMonthEndDay = new DateTime(period.Start.Year, period.Start.Month, DateTime.DaysInMonth(period.Start.Year, period.Start.Month));
+                var lastMonthStartDay = new DateTime(period.End.Year, period.End.Month, 1);
 
-                var startAmount = GetStartMonthAndEndMonthBudgetAmount(budgetList, start, firstMonthEndDay);
-                var lastAmount = GetStartMonthAndEndMonthBudgetAmount(budgetList, lastMonthStartDay, end);
+                var startAmount = GetStartMonthAndEndMonthBudgetAmount(budgetList, period.Start, firstMonthEndDay);
+                var lastAmount = GetStartMonthAndEndMonthBudgetAmount(budgetList, lastMonthStartDay, period.End);
 
                 var middleAmount = 0;
-                var middleStart = new DateTime(start.Year, start.Month, 1).AddMonths(1);
-                var middleEnd = new DateTime(end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month)).AddMonths(-1);
+                var middleStart = new DateTime(period.Start.Year, period.Start.Month, 1).AddMonths(1);
+                var middleEnd = new DateTime(period.End.Year, period.End.Month, DateTime.DaysInMonth(period.End.Year, period.End.Month)).AddMonths(-1);
                 while (middleStart < middleEnd)
                 {
                     middleAmount += budgetList.Count(a => a.YearMonth == middleStart.ToString("yyyyMM")) > 0 ? budgetList.Single(a => a.YearMonth == middleStart.ToString("yyyyMM")).Amount : 0;
