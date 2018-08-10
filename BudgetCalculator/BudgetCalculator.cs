@@ -4,6 +4,18 @@ using System.Linq;
 
 namespace BudgetCalculator
 {
+    public class Period
+    {
+        public Period(DateTime start, DateTime end)
+        {
+            Start = start;
+            End = end;
+        }
+
+        public DateTime Start { get; private set; }
+        public DateTime End { get; private set; }
+    }
+
     public class BudgetCalculator
     {
         private IBudgetRepo _repo;
@@ -24,7 +36,7 @@ namespace BudgetCalculator
                 return 0;
             }
 
-            if (IsQuerySingleMonth(start, end))
+            if (IsQuerySingleMonth(new Period(start, end)))
             {
                 return GetStartMonthAndEndMonthBudgetAmount(budgetList, start, end);
             }
@@ -49,9 +61,9 @@ namespace BudgetCalculator
             }
         }
 
-        private static bool IsQuerySingleMonth(DateTime start, DateTime end)
+        private static bool IsQuerySingleMonth(Period period)
         {
-            return start.ToString("yyyyMM") == end.ToString("yyyyMM");
+            return period.Start.ToString("yyyyMM") == period.End.ToString("yyyyMM");
         }
 
         private decimal GetStartMonthAndEndMonthBudgetAmount(IList<Budget> budgetList, DateTime start, DateTime end)
